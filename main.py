@@ -2,6 +2,7 @@ import pygame
 from constants import *
 from game_board import GameBoard
 
+# hello
 class Game:
     def __init__(self):
         pygame.init()
