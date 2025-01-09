@@ -23,7 +23,7 @@ class Game:
 
             pygame.display.update()
             self.screen.fill(BG_COLOR)
-            self.game_board.run()
+            self.game_board.update(self.delta_time)
             self.clock.tick(FPS)
 
 
