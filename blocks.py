@@ -1,3 +1,4 @@
+import enum
 import pygame
 from constants import *
 
@@ -22,3 +23,14 @@ class Block:
     def move_right(self):
         if self.rect.x < self.initial_pos[0] + (COLS - 1) * UNIT:
             self.rect.x += UNIT
+
+class Piece:
+    def __init__(self, piece_type, initial_pos) -> None:
+        self.display_surface = pygame.display.get_surface()
+        self.piece_type = piece_type
+        self.initial_pos = initial_pos
+        self.blocks = []
+
+    def generate_blocks(self):
+        if self.piece_type == PieceType.T_PIECE.value:
+            pass
