@@ -6,8 +6,8 @@ ROWS = 20
 COLS = 10
 FPS = 60
 
-GRID_COLOR = (255, 255, 255)
-BOARD_COLOR = (63, 63, 63)
+GRID_COLOR = (200, 200, 200)
+BOARD_COLOR = (100, 100, 100)
 BG_COLOR = (33, 33, 33)
 
 class PieceType(Enum):
@@ -17,3 +17,5 @@ class PieceType(Enum):
     Z_PIECE = 3
     L_PIECE = 4
     J_PIECE = 5
+
+T_PIECE_COLOR = (137, 52, 136)
