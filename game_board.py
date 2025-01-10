@@ -26,10 +26,10 @@ class GameBoard:
         self.accumulator += delta_time
         if self.accumulator >= self.tick_rate:
             self.accumulator = self.accumulator - self.tick_rate
-            # self.block.update()
+            self.current_piece.update()
             print("update")
 
-        self.current_piece.update()
+        self.current_piece.draw()
         # self.block.draw()
         self.draw_grid()
 
