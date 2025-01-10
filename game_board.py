@@ -16,9 +16,9 @@ class GameBoard:
         self.key_pressed = False
 
         self.block = Block((self.x, self.y), T_PIECE_COLOR)
-        self.piece_list = [Piece(piece_type.value, (self.x, self.y)) for piece_type in PieceType]
+        self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect) for piece_type in PieceType]
         # self.current_piece = random.choice(self.piece_list)
-        self.current_piece = Piece(PieceType.T_PIECE.value, (self.x, self.y))
+        self.current_piece = Piece(PieceType.T_PIECE.value, (self.x, self.y), self.rect)
 
     def update(self, delta_time):
         self.input()
