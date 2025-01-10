@@ -1,6 +1,7 @@
 from constants import *
-from blocks import Block
+from blocks import Block, Piece
 import pygame
+import random
 
 class GameBoard:
     def __init__(self) -> None:
@@ -10,10 +11,14 @@ class GameBoard:
         self.x = (SCREEN_WIDTH - self.width) / 2
         self.y = (SCREEN_HEIGHT - self.height) / 2
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
-        self.block = Block((self.x, self.y))
         self.accumulator = 0
         self.tick_rate = 1
         self.key_pressed = False
+
+        self.block = Block((self.x, self.y), T_PIECE_COLOR)
+        self.piece_list = [Piece(piece_type.value, (self.x, self.y)) for piece_type in PieceType]
+        # self.current_piece = random.choice(self.piece_list)
+        self.current_piece = Piece(PieceType.T_PIECE.value, (self.x, self.y))
 
     def update(self, delta_time):
         self.input()
@@ -21,10 +26,11 @@ class GameBoard:
         self.accumulator += delta_time
         if self.accumulator >= self.tick_rate:
             self.accumulator = self.accumulator - self.tick_rate
-            self.block.update()
+            # self.block.update()
             print("update")
 
-        self.block.draw()
+        self.current_piece.update()
+        # self.block.draw()
         self.draw_grid()
 
     def draw_grid(self):
@@ -40,9 +46,11 @@ class GameBoard:
         if not self.key_pressed:
            if key[pygame.K_RIGHT]:
                 self.block.move_right()
+                self.current_piece.move_right()
                 self.key_pressed = True
            elif key[pygame.K_LEFT]:
                 self.block.move_left()
+                self.current_piece.move_left()
                 self.key_pressed = True
            elif key[pygame.K_UP]:
                 print("up")
