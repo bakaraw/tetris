@@ -12,13 +12,14 @@ class GameBoard:
         self.y = (SCREEN_HEIGHT - self.height) / 2
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.accumulator = 0
-        self.tick_rate = 1
+        self.tick_rate = 0.1
         self.key_pressed = False
 
         self.block = Block((self.x, self.y), T_PIECE_COLOR)
         self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect) for piece_type in PieceType]
-        # self.current_piece = random.choice(self.piece_list)
-        self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect)
+        self.current_piece = self.copy_piece(random.choice(self.piece_list))
+        # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect)
+        self.piece_in_board = []
 
     def update(self, delta_time):
         self.input()
@@ -27,11 +28,20 @@ class GameBoard:
         if self.accumulator >= self.tick_rate:
             self.accumulator = self.accumulator - self.tick_rate
             self.current_piece.update()
-            print("update")
+
+        if self.current_piece.reached_bottom:
+            self.piece_in_board.append(self.current_piece)
+            self.current_piece = self.copy_piece(random.choice(self.piece_list))
 
         self.current_piece.draw()
-        # self.block.draw()
+
+        for piece in self.piece_in_board:
+            piece.draw()
+
         self.draw_grid()
+
+    def copy_piece(self, piece: Piece):
+        return Piece(piece.piece_type, piece.initial_pos, piece.game_board_rect)
 
     def draw_grid(self):
         for row in range(ROWS + 1):

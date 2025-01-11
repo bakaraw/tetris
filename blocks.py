@@ -82,7 +82,6 @@ class Piece:
             for block in self.blocks:
                 block.move_downward()
         else:
-            print("reached the bottom")
             self.reached_bottom = True
 
 
