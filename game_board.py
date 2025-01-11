@@ -25,6 +25,7 @@ class GameBoard:
         self.key_accumulator = 0
         self.key_tick_rate = 3
 
+
     def update(self, delta_time):
         self.input()
         pygame.draw.rect(self.display_surface, BOARD_COLOR, self.rect)
@@ -103,7 +104,6 @@ class GameBoard:
                 self.block.move_left()
                 self.current_piece.move_left()
                 self.key_accumulator = 0
-
 
     # def get_all_blocks(self):
     #     for self
