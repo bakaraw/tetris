@@ -18,4 +18,9 @@ class PieceType(Enum):
     L_PIECE = 4
     J_PIECE = 5
 
-T_PIECE_COLOR = (137, 52, 136)
+T_PIECE_COLOR = (233, 5, 233)
+I_PIECE_COLOR = (4, 233, 233)
+L_PIECE_COLOR = (233, 153, 4)
+S_PIECE_COLOR = (4, 233, 6)
+Z_PIECE_COLOR = (232, 5, 4)
+J_PIECE_COLOR = (5, 5, 233)

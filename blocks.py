@@ -38,14 +38,40 @@ class Piece:
         self.blocks = []
         self.game_board_rect = game_board_rect
         self.reached_bottom = False
-        self.generate_blocks()
+        self.generate_piece()
 
-    def generate_blocks(self):
+    def generate_piece(self):
         if self.piece_type == PieceType.T_PIECE.value:
             self.blocks.append(Block((self.x, self.y + UNIT), T_PIECE_COLOR))
             self.blocks.append(Block((self.x + UNIT, self.y + UNIT), T_PIECE_COLOR))
             self.blocks.append(Block((self.x + UNIT * 2, self.y + UNIT), T_PIECE_COLOR))
             self.blocks.append(Block((self.x + UNIT, self.y), T_PIECE_COLOR))
+        elif self.piece_type == PieceType.L_PIECE.value:
+            self.blocks.append(Block((self.x, self.y), L_PIECE_COLOR))
+            self.blocks.append(Block((self.x, self.y + UNIT), L_PIECE_COLOR))
+            self.blocks.append(Block((self.x, self.y + 2 * UNIT), L_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y + 2 * UNIT), L_PIECE_COLOR))
+        elif self.piece_type == PieceType.I_PIECE.value:
+            self.blocks.append(Block((self.x, self.y), I_PIECE_COLOR))
+            self.blocks.append(Block((self.x, self.y + UNIT), I_PIECE_COLOR))
+            self.blocks.append(Block((self.x, self.y + (2 * UNIT)), I_PIECE_COLOR))
+            self.blocks.append((Block((self.x, self.y + (3 * UNIT)), I_PIECE_COLOR)))
+        elif self.piece_type == PieceType.S_PIECE.value:
+            self.blocks.append(Block((self.x, self.y + UNIT), S_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y + UNIT), S_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y), S_PIECE_COLOR))
+            self.blocks.append(Block((self.x + 2 * UNIT, self.y), S_PIECE_COLOR))
+        elif self.piece_type == PieceType.Z_PIECE.value:
+            self.blocks.append(Block((self.x, self.y), Z_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y), Z_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y + UNIT), Z_PIECE_COLOR))
+            self.blocks.append(Block((self.x + 2 * UNIT, self.y + UNIT), Z_PIECE_COLOR))
+        elif self.piece_type == PieceType.J_PIECE.value:
+            self.blocks.append(Block((self.x, self.y + 2 * UNIT), J_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y + 2 * UNIT), J_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y + UNIT), J_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y), J_PIECE_COLOR))
+            
 
     def draw(self):
         for block in self.blocks:
