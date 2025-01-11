@@ -24,6 +24,9 @@ class GameBoard:
         self.key_accumulator = 0
         self.key_tick_rate = 3
 
+        self.key_accumulator = 0
+        self.key_tick_rate = 3
+
     def update(self, delta_time):
         self.input()
         pygame.draw.rect(self.display_surface, BOARD_COLOR, self.rect)
