@@ -1,4 +1,3 @@
-import enum
 import pygame
 from constants import *
 
@@ -7,10 +6,8 @@ class Block:
         self.display_surface = pygame.display.get_surface()
         self.initial_pos = initial_pos
         self.rect = pygame.Rect(self.initial_pos[0], self.initial_pos[1], UNIT, UNIT)
-        self.in_right_bound = False
-        self.in_left_bound = False
-        self.in_bottom_bound = False
         self.color = color
+        self.collides_with_block = False
 
     def draw(self):
         pygame.draw.rect(self.display_surface, self.color, self.rect)
@@ -29,7 +26,7 @@ class Block:
         self.rect.x += UNIT
 
 class Piece:
-    def __init__(self, piece_type, initial_pos, game_board_rect) -> None:
+    def __init__(self, piece_type, initial_pos, game_board_rect, all_blocks) -> None:
         self.display_surface = pygame.display.get_surface()
         self.piece_type = piece_type
         self.initial_pos = initial_pos
@@ -38,6 +35,7 @@ class Piece:
         self.blocks = []
         self.game_board_rect = game_board_rect
         self.reached_bottom = False
+        self.all_blocks = all_blocks
         self.generate_piece()
 
     def generate_piece(self):
@@ -78,7 +76,7 @@ class Piece:
             block.draw()
 
     def update(self):
-        if all(block.rect.y < self.game_board_rect.y + self.game_board_rect.height - UNIT for block in self.blocks):
+        if not self.check_collision(0, UNIT):
             for block in self.blocks:
                 block.move_downward()
         else:
@@ -86,11 +84,23 @@ class Piece:
 
 
     def move_left(self):
-        if all(block.rect.x > self.game_board_rect.x for block in self.blocks):
+        if not self.check_collision(-UNIT, 0):
             for block in self.blocks:
                 block.move_left()
 
     def move_right(self):
-        if all(block.rect.x + block.rect.width < self.game_board_rect.x + self.game_board_rect.width for block in self.blocks):
+        if not self.check_collision(UNIT, 0):
             for block in self.blocks:
                 block.move_right()
+
+    def check_collision(self, dx, dy):
+        for block in self.blocks:
+            new_rect = block.rect.move(dx, dy)
+            if not self.game_board_rect.contains(new_rect):
+                return True
+            for other_block in self.all_blocks:
+                if new_rect.colliderect(other_block.rect):
+                    print("collided")
+                    return True
+        return False
+        

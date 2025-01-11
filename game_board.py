@@ -15,11 +15,12 @@ class GameBoard:
         self.tick_rate = 0.1
         self.key_pressed = False
 
+        self.piece_in_board = []
+        self.all_blocks = []
         self.block = Block((self.x, self.y), T_PIECE_COLOR)
-        self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect) for piece_type in PieceType]
+        self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect, []) for piece_type in PieceType]
         self.current_piece = self.copy_piece(random.choice(self.piece_list))
         # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect)
-        self.piece_in_board = []
 
     def update(self, delta_time):
         self.input()
@@ -30,18 +31,30 @@ class GameBoard:
             self.current_piece.update()
 
         if self.current_piece.reached_bottom:
-            self.piece_in_board.append(self.current_piece)
-            self.current_piece = self.copy_piece(random.choice(self.piece_list))
+            new_piece = self.copy_piece(random.choice(self.piece_list))
+            for block in self.current_piece.blocks:
+                for other_block in new_piece.blocks:
+                    # if new piece collides with the current piece the it is game over
+                    if block.rect.x == other_block.rect.x and block.rect.y == other_block.rect.y:
+                        print("Game Over")
+                        pygame.quit()
+                        return
+
+            for block in self.current_piece.blocks:
+                self.all_blocks.append(block)
+            self.current_piece = new_piece
+            print(len(self.all_blocks))
 
         self.current_piece.draw()
 
-        for piece in self.piece_in_board:
-            piece.draw()
+        for block in self.all_blocks:
+            block.draw()
+
 
         self.draw_grid()
 
     def copy_piece(self, piece: Piece):
-        return Piece(piece.piece_type, piece.initial_pos, piece.game_board_rect)
+        return Piece(piece.piece_type, piece.initial_pos, piece.game_board_rect, self.all_blocks)
 
     def draw_grid(self):
         for row in range(ROWS + 1):
@@ -72,3 +85,6 @@ class GameBoard:
         else:
             if not (key[pygame.K_RIGHT] or key[pygame.K_LEFT] or key[pygame.K_DOWN] or key[pygame.K_UP]):
                 self.key_pressed = False
+
+    # def get_all_blocks(self):
+    #     for self
