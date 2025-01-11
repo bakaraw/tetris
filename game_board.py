@@ -15,12 +15,14 @@ class GameBoard:
         self.tick_rate = 0.1
         self.key_pressed = False
 
-        self.piece_in_board = []
         self.all_blocks = []
         self.block = Block((self.x, self.y), T_PIECE_COLOR)
         self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect, []) for piece_type in PieceType]
-        self.current_piece = self.copy_piece(random.choice(self.piece_list))
-        # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect)
+        # self.current_piece = self.copy_piece(random.choice(self.piece_list))
+        self.current_piece = Piece(PieceType.L_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
+
+        self.key_accumulator = 0
+        self.key_tick_rate = 3
 
         self.key_accumulator = 0
         self.key_tick_rate = 3
@@ -38,11 +40,16 @@ class GameBoard:
             new_piece = self.copy_piece(random.choice(self.piece_list))
             for block in self.current_piece.blocks:
                 for other_block in new_piece.blocks:
-                    # if new piece collides with the current piece the it is game over
+                    # if new piece collides with the current piece then it is game over
                     if block.rect.x == other_block.rect.x and block.rect.y == other_block.rect.y:
                         print("Game Over")
                         pygame.quit()
-                        return
+
+            # if a block is out of bounds, then game over
+            for block in self.all_blocks:
+                if not self.rect.contains(block.rect):
+                    print("Game Over")
+                    pygame.quit()
 
             for block in self.current_piece.blocks:
                 self.all_blocks.append(block)
@@ -81,6 +88,7 @@ class GameBoard:
                 self.key_pressed = True
            elif key[pygame.K_UP]:
                 print("up")
+                self.current_piece.rotate()
                 self.key_pressed = True
            elif key[pygame.K_DOWN]:
                 print("down")
@@ -104,6 +112,3 @@ class GameBoard:
                 self.block.move_left()
                 self.current_piece.move_left()
                 self.key_accumulator = 0
-
-    # def get_all_blocks(self):
-    #     for self

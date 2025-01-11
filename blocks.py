@@ -16,13 +16,9 @@ class Block:
         self.rect.y += UNIT
 
     def move_left(self):
-        # if self.rect.x > self.initial_pos[0]:
-        #     self.rect.x -= UNIT
         self.rect.x -= UNIT
 
     def move_right(self):
-        # if self.rect.x < self.initial_pos[0] + (COLS - 1) * UNIT:
-        #     self.rect.x += UNIT
         self.rect.x += UNIT
 
 class Piece:
@@ -36,6 +32,7 @@ class Piece:
         self.game_board_rect = game_board_rect
         self.reached_bottom = False
         self.all_blocks = all_blocks
+        self.rotate_position = 0
         self.generate_piece()
 
     def generate_piece(self):
@@ -69,6 +66,11 @@ class Piece:
             self.blocks.append(Block((self.x + UNIT, self.y + 2 * UNIT), J_PIECE_COLOR))
             self.blocks.append(Block((self.x + UNIT, self.y + UNIT), J_PIECE_COLOR))
             self.blocks.append(Block((self.x + UNIT, self.y), J_PIECE_COLOR))
+        elif self.piece_type == PieceType.O_PIECE.value:
+            self.blocks.append(Block((self.x, self.y), O_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y), O_PIECE_COLOR))
+            self.blocks.append(Block((self.x, self.y + UNIT), O_PIECE_COLOR))
+            self.blocks.append(Block((self.x + UNIT, self.y + UNIT), O_PIECE_COLOR))
             
 
     def draw(self):
@@ -103,4 +105,12 @@ class Piece:
                     print("collided")
                     return True
         return False
-        
+    
+    def rotate(self):
+        self.rotate_position = (self.rotate_position + 1) % 4
+        offsets = ROTATION_OFFSETS[self.piece_type][self.rotate_position]
+        for block, (dx, dy) in zip(self.blocks, offsets):
+            block.rect.x += dx * UNIT
+            block.rect.y += dy * UNIT 
+
+
