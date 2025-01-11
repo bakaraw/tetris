@@ -22,6 +22,9 @@ class GameBoard:
         self.current_piece = self.copy_piece(random.choice(self.piece_list))
         # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect)
 
+        self.key_accumulator = 0
+        self.key_tick_rate = 3
+
     def update(self, delta_time):
         self.input()
         pygame.draw.rect(self.display_surface, BOARD_COLOR, self.rect)
@@ -85,6 +88,22 @@ class GameBoard:
         else:
             if not (key[pygame.K_RIGHT] or key[pygame.K_LEFT] or key[pygame.K_DOWN] or key[pygame.K_UP]):
                 self.key_pressed = False
+                self.key_accumulator = 0
+
+        # when left and right key is held down
+        if key[pygame.K_RIGHT]:
+            self.key_accumulator += 0.3
+            if self.key_accumulator >= self.key_tick_rate:
+                self.block.move_right()
+                self.current_piece.move_right()
+                self.key_accumulator = 0
+        elif key[pygame.K_LEFT]:
+            self.key_accumulator += 0.3
+            if self.key_accumulator >= self.key_tick_rate:
+                self.block.move_left()
+                self.current_piece.move_left()
+                self.key_accumulator = 0
+
 
     # def get_all_blocks(self):
     #     for self
