@@ -12,14 +12,14 @@ class GameBoard:
         self.y = (SCREEN_HEIGHT - self.height) / 2
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
         self.accumulator = 0
-        self.tick_rate = 0.1
+        self.tick_rate = 0.5
         self.key_pressed = False
 
         self.all_blocks = []
         self.block = Block((self.x, self.y), T_PIECE_COLOR)
         self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect, []) for piece_type in PieceType]
         # self.current_piece = self.copy_piece(random.choice(self.piece_list))
-        self.current_piece = Piece(PieceType.L_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
+        self.current_piece = Piece(PieceType.T_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
 
         self.key_accumulator = 0
         self.key_tick_rate = 3
@@ -86,11 +86,13 @@ class GameBoard:
                 self.block.move_left()
                 self.current_piece.move_left()
                 self.key_pressed = True
-           elif key[pygame.K_UP]:
+
+           if key[pygame.K_UP]:
                 print("up")
                 self.current_piece.rotate()
                 self.key_pressed = True
-           elif key[pygame.K_DOWN]:
+
+           if key[pygame.K_DOWN]:
                 print("down")
                 self.key_pressed = True
 
