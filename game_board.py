@@ -22,10 +22,9 @@ class GameBoard:
         self.u_d_accumulator = 0
 
         self.all_blocks = []
-        self.block = Block((self.x, self.y), T_PIECE_COLOR)
         self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect, []) for piece_type in PieceType]
-        # self.current_piece = self.copy_piece(random.choice(self.piece_list))
-        self.current_piece = Piece(PieceType.T_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
+        self.current_piece = self.copy_piece(random.choice(self.piece_list))
+        # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
 
         self.key_accumulator = 0
         self.key_tick_rate = 3
@@ -85,11 +84,9 @@ class GameBoard:
         key = pygame.key.get_pressed()
         if not self.l_r_pressed:
            if key[pygame.K_RIGHT]:
-                self.block.move_right()
                 self.current_piece.move_right()
                 self.l_r_pressed = True
            elif key[pygame.K_LEFT]:
-                self.block.move_left()
                 self.current_piece.move_left()
                 self.l_r_pressed = True
 
@@ -117,13 +114,11 @@ class GameBoard:
         if key[pygame.K_RIGHT]:
             self.key_accumulator += 0.3
             if self.key_accumulator >= self.key_tick_rate:
-                self.block.move_right()
                 self.current_piece.move_right()
                 self.key_accumulator = 4
         elif key[pygame.K_LEFT]:
             self.key_accumulator += 0.3
             if self.key_accumulator >= self.key_tick_rate:
-                self.block.move_left()
                 self.current_piece.move_left()
                 self.key_accumulator = 4
         elif key [pygame.K_DOWN]:
