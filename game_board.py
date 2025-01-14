@@ -11,9 +11,15 @@ class GameBoard:
         self.x = (SCREEN_WIDTH - self.width) / 2
         self.y = (SCREEN_HEIGHT - self.height) / 2
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
         self.accumulator = 0
         self.tick_rate = 0.5
+        
         self.key_pressed = False
+        self.l_r_pressed = False
+
+        self.u_d_pressed = False
+        self.u_d_accumulator = 0
 
         self.all_blocks = []
         self.block = Block((self.x, self.y), T_PIECE_COLOR)
@@ -25,7 +31,7 @@ class GameBoard:
         self.key_tick_rate = 3
 
         self.key_accumulator = 0
-        self.key_tick_rate = 3
+        self.key_tick_rate = 5
 
 
     def update(self, delta_time):
@@ -77,29 +83,35 @@ class GameBoard:
 
     def input(self):
         key = pygame.key.get_pressed()
-        if not self.key_pressed:
+        if not self.l_r_pressed:
            if key[pygame.K_RIGHT]:
                 self.block.move_right()
                 self.current_piece.move_right()
-                self.key_pressed = True
+                self.l_r_pressed = True
            elif key[pygame.K_LEFT]:
                 self.block.move_left()
                 self.current_piece.move_left()
-                self.key_pressed = True
+                self.l_r_pressed = True
 
-           if key[pygame.K_UP]:
+           # if key[pygame.K_DOWN]:
+           #      print("down")
+           #      self.l_r_pressed = True
+        else:
+            if not (key[pygame.K_RIGHT] or key[pygame.K_LEFT]):
+                self.l_r_pressed = False
+                self.key_accumulator = 0
+
+        # for up key
+        # this is separated from the above statement because we want the piece to rotate when left or right key is held down
+        # this is to prevent up key from being pressed when left or right key is held down
+        if not self.u_d_pressed:
+            if key[pygame.K_UP]:
                 print("up")
                 self.current_piece.rotate()
-                self.key_pressed = True
-
-           if key[pygame.K_DOWN]:
-                print("down")
-                self.key_pressed = True
-
+                self.u_d_pressed = True
         else:
-            if not (key[pygame.K_RIGHT] or key[pygame.K_LEFT] or key[pygame.K_DOWN] or key[pygame.K_UP]):
-                self.key_pressed = False
-                self.key_accumulator = 0
+            if not key[pygame.K_UP]:
+                self.u_d_pressed = False
 
         # when left and right key is held down
         if key[pygame.K_RIGHT]:
@@ -107,10 +119,15 @@ class GameBoard:
             if self.key_accumulator >= self.key_tick_rate:
                 self.block.move_right()
                 self.current_piece.move_right()
-                self.key_accumulator = 0
+                self.key_accumulator = 4
         elif key[pygame.K_LEFT]:
             self.key_accumulator += 0.3
             if self.key_accumulator >= self.key_tick_rate:
                 self.block.move_left()
                 self.current_piece.move_left()
-                self.key_accumulator = 0
+                self.key_accumulator = 4
+        elif key [pygame.K_DOWN]:
+            self.tick_rate = 0.1
+
+        if not key[pygame.K_DOWN]:
+            self.tick_rate = 0.5
