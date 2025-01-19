@@ -12,8 +12,8 @@ class Block:
     def draw(self):
         pygame.draw.rect(self.display_surface, self.color, self.rect)
 
-    def move_downward(self):
-        self.rect.y += UNIT
+    def move_downward(self, steps = 1):
+        self.rect.y += steps * UNIT
 
     def move_left(self):
         self.rect.x -= UNIT
