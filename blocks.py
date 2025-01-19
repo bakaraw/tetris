@@ -11,6 +11,9 @@ class Block:
 
     def draw(self):
         pygame.draw.rect(self.display_surface, self.color, self.rect)
+        
+    def move_upward(self):
+        self.rect.y -= UNIT
 
     def move_downward(self, steps = 1):
         self.rect.y += steps * UNIT
@@ -87,13 +90,23 @@ class Piece:
         # check new blocks position if its within bounds and collision with other blocks
         collided = False
         for block in self.blocks:
-            if not self.game_board_rect.contains(block.rect):
-                collided = True
+
+            # this logic allow rotation of the pieces when close to the game board boundaries
+            if block.rect.x < self.game_board_rect.x :
+                for b in self.blocks:
+                    b.move_right()
+            elif block.rect.x >= self.game_board_rect.x + self.game_board_rect.width:
+                for b in self.blocks:
+                    b.move_left()
+            elif block.rect.y >= self.game_board_rect.y + self.game_board_rect.height:
+                for b in self.blocks:
+                    b.move_upward()
+
+            # check if the new block position collides with other blocks
             for other_block in self.all_blocks:
                 if block.rect.colliderect(other_block.rect):
                     collided = True
 
-        # revert blocks position if collided or out of bounds
         if collided:
             for block, (dx, dy) in zip(self.blocks, offsets):
                 block.rect.x -= dx * UNIT
