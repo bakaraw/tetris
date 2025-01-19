@@ -75,12 +75,30 @@ class Piece:
                     print("collided")
                     return True
         return False
-    
+
     def rotate(self):
         self.rotate_position = (self.rotate_position + 1) % 4
         offsets = ROTATION_OFFSETS[self.piece_type][self.rotate_position]
         for block, (dx, dy) in zip(self.blocks, offsets):
             block.rect.x += dx * UNIT
             block.rect.y += dy * UNIT 
+
+        collided = False
+        for block in self.blocks:
+            if not self.game_board_rect.contains(block.rect):
+                collided = True
+            for other_block in self.all_blocks:
+                if block.rect.colliderect(other_block.rect):
+                    collided = True
+
+        if collided:
+            for block, (dx, dy) in zip(self.blocks, offsets):
+                block.rect.x -= dx * UNIT
+                block.rect.y -= dy * UNIT
+            self.rotate_position = (self.rotate_position - 1) % 4
+
+
+
+
 
 
