@@ -56,9 +56,9 @@ class GameBoard:
                 self.all_blocks.append(block)
             self.current_piece = new_piece
             self.shadow_piece = self.copy_piece(self.current_piece)
+            self.check_lines()
 
         self.draw_grid()
-        self.check_lines()
         self.update_shadow_piece()
         self.draw_shadow_piece()
         self.current_piece.draw()
