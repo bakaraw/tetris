@@ -7,10 +7,13 @@ class Block:
         self.initial_pos = initial_pos
         self.rect = pygame.Rect(self.initial_pos[0], self.initial_pos[1], UNIT, UNIT)
         self.color = color
+        self.stroke_color = (0, 0, 0)
+        self.stroke_width = 2
         self.collides_with_block = False
 
     def draw(self):
         pygame.draw.rect(self.display_surface, self.color, self.rect)
+        pygame.draw.rect(self.display_surface, self.stroke_color, self.rect, self.stroke_width)
         
     def move_upward(self):
         self.rect.y -= UNIT
@@ -37,6 +40,7 @@ class Piece:
         self.reached_bottom = False
         self.all_blocks = all_blocks
         self.rotate_position = 0
+        self.color = PIECE_COLORS[self.piece_type]
         self.generate_piece()
 
     def generate_piece(self):
@@ -44,11 +48,14 @@ class Piece:
         for pos in blocks_inital_position:
             x = self.x + UNIT * pos[0] + PIECE_INITIAL_X_OFFSET[self.piece_type]
             y = self.y + UNIT * pos[1]
-            self.blocks.append(Block((x, y), PIECE_COLORS[self.piece_type])) 
+            self.blocks.append(Block((x, y), self.color)) 
 
     def draw(self):
         for block in self.blocks:
             block.draw()
+
+        for block in self.blocks:
+            pygame.draw.rect(self.display_surface, block.stroke_color, block.rect, block.stroke_width)
 
     def update(self):
         if not self.check_collision(0, UNIT):
@@ -75,7 +82,6 @@ class Piece:
                 return True
             for other_block in self.all_blocks:
                 if new_rect.colliderect(other_block.rect):
-                    print("collided")
                     return True
         return False
 

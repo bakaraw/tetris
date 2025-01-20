@@ -1,7 +1,7 @@
 from enum import Enum, pickle_by_global_name
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 750, 900
-UNIT = 40
+UNIT = 35
 ROWS = 20
 COLS = 10
 FPS = 60
@@ -9,6 +9,8 @@ FPS = 60
 GRID_COLOR = (200, 200, 200)
 BOARD_COLOR = (100, 100, 100)
 BG_COLOR = (33, 33, 33)
+
+SHADOW_COLOR = (255, 255, 255, 30)
 
 class PieceType(Enum):
     T_PIECE = 0

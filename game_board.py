@@ -21,10 +21,15 @@ class GameBoard:
 
         self.u_d_pressed = False
         self.u_d_accumulator = 0
+        
+        self.space_pressed = False
 
         self.all_blocks = []
-        self.piece_list = [Piece(piece_type.value, (self.x, self.y), self.rect, []) for piece_type in PieceType]
+        new_game_board_rect = pygame.Rect(self.x, self.y - 3 * UNIT, self.width, self.height + 3 * UNIT)
+        self.piece_list = [Piece(piece_type.value, (self.x, self.y - 3 * UNIT), new_game_board_rect, []) for piece_type in PieceType]
         self.current_piece = self.copy_piece(random.choice(self.piece_list))
+        self.shadow_piece = self.copy_piece(self.current_piece)
+        self.update_shadow_piece()
         # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
 
         self.key_accumulator = 0
@@ -49,16 +54,34 @@ class GameBoard:
 
             for block in self.current_piece.blocks:
                 self.all_blocks.append(block)
-
             self.current_piece = new_piece
+            self.shadow_piece = self.copy_piece(self.current_piece)
 
+        self.draw_grid()
         self.check_lines()
+        self.update_shadow_piece()
+        self.draw_shadow_piece()
         self.current_piece.draw()
 
         for block in self.all_blocks:
             block.draw()
 
-        self.draw_grid()
+    def drop_piece(self):
+        while not self.current_piece.reached_bottom:
+            self.current_piece.update()
+
+    def draw_shadow_piece(self):
+        while not self.shadow_piece.reached_bottom:
+            self.shadow_piece.update()
+        self.shadow_piece.draw()
+
+    def update_shadow_piece(self):
+        self.shadow_piece.x = self.current_piece.x
+        self.shadow_piece.y = self.current_piece.y
+        self.shadow_piece.blocks = [Block((block.rect.x, block.rect.y), SHADOW_COLOR) for block in self.current_piece.blocks]
+        self.shadow_piece.all_blocks = self.all_blocks
+        self.shadow_piece.reached_bottom = False
+        
 
     def is_game_over(self, new_piece):
         for block in self.current_piece.blocks:
@@ -87,21 +110,14 @@ class GameBoard:
             if len(block_dic[key]) == 10:
                 completed_line_pos.append(key)
 
-        # self.all_blocks = [block for block in self.all_blocks if block.rect.y not in completed_line_pos]
-        # for block in self.all_blocks:
-        #     for line_pos in completed_line_pos:
-        #         if block.rect.y < line_pos and len(completed_line_pos) != 0:
-        #             block.move_downward()
-        # Remove blocks at completed line positions
-
+        # remove blocks at completed line positions
         self.all_blocks = [block for block in self.all_blocks if block.rect.y not in completed_line_pos]
 
-        # Move remaining blocks downward
+        # move remaining blocks downward
         for block in self.all_blocks:
-            # Count how many completed lines are below this block
             lines_below = sum(1 for line_pos in completed_line_pos if block.rect.y < line_pos)
             if lines_below > 0:
-                block.move_downward(lines_below)  # Assuming move_downward() can handle multiple steps
+                block.move_downward(lines_below)
 
         self.current_piece.all_blocks = self.all_blocks
 
@@ -122,15 +138,13 @@ class GameBoard:
            if key[pygame.K_RIGHT]:
                 self.current_piece.move_right()
                 self.l_r_pressed = True
+                self.update_shadow_piece()
            elif key[pygame.K_LEFT]:
                 self.current_piece.move_left()
                 self.l_r_pressed = True
-
-           # if key[pygame.K_DOWN]:
-           #      print("down")
-           #      self.l_r_pressed = True
+                self.update_shadow_piece()
         else:
-            if not (key[pygame.K_RIGHT] or key[pygame.K_LEFT]):
+            if not (key[pygame.K_RIGHT] or key[pygame.K_LEFT] or key[pygame.K_SPACE]):
                 self.l_r_pressed = False
                 self.key_accumulator = 0
 
@@ -142,9 +156,19 @@ class GameBoard:
                 print("up")
                 self.current_piece.rotate()
                 self.u_d_pressed = True
+                self.update_shadow_piece()
         else:
             if not key[pygame.K_UP]:
                 self.u_d_pressed = False
+
+        if not self.space_pressed:
+            if key[pygame.K_SPACE]:
+                self.drop_piece()
+                self.space_pressed = True
+        else:
+            if not key[pygame.K_SPACE]:
+                self.space_pressed = False
+
 
         # when left and right key is held down
         if key[pygame.K_RIGHT]:
@@ -152,11 +176,13 @@ class GameBoard:
             if self.key_accumulator >= self.key_tick_rate:
                 self.current_piece.move_right()
                 self.key_accumulator = 4
+                self.update_shadow_piece()
         elif key[pygame.K_LEFT]:
             self.key_accumulator += 0.3
             if self.key_accumulator >= self.key_tick_rate:
                 self.current_piece.move_left()
                 self.key_accumulator = 4
+                self.update_shadow_piece()
         elif key [pygame.K_DOWN]:
             self.tick_rate = 0.1
 
