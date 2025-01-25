@@ -1,5 +1,6 @@
 from constants import *
 from blocks import Block, Piece
+from ui import UI
 import pygame
 import random
 
@@ -27,10 +28,11 @@ class GameBoard:
         self.all_blocks = []
         new_game_board_rect = pygame.Rect(self.x, self.y - 3 * UNIT, self.width, self.height + 3 * UNIT)
         self.piece_list = [Piece(piece_type.value, (self.x, self.y - 3 * UNIT), new_game_board_rect, []) for piece_type in PieceType]
-        self.current_piece = self.copy_piece(random.choice(self.piece_list))
+        self.piece_queue = [self.copy_piece(random.choice(self.piece_list)) for _ in range(6)]
+        self.current_piece = self.piece_queue.pop(0)
         self.shadow_piece = self.copy_piece(self.current_piece)
         self.update_shadow_piece()
-        # self.current_piece = Piece(PieceType.J_PIECE.value, (self.x, self.y), self.rect, self.all_blocks)
+        self.ui = UI(self.rect)
 
         self.key_accumulator = 0
         self.key_tick_rate = 3
@@ -54,13 +56,15 @@ class GameBoard:
 
             for block in self.current_piece.blocks:
                 self.all_blocks.append(block)
-            self.current_piece = new_piece
+            self.current_piece = self.piece_queue.pop(0)
+            self.piece_queue.append(new_piece)
             self.shadow_piece = self.copy_piece(self.current_piece)
             self.check_lines()
 
         self.draw_grid()
         self.update_shadow_piece()
         self.draw_shadow_piece()
+        self.ui.draw([piece.piece_type for piece in self.piece_queue], None)
         self.current_piece.draw()
 
         for block in self.all_blocks:

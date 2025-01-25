@@ -11,6 +11,7 @@ BOARD_COLOR = (100, 100, 100)
 BG_COLOR = (33, 33, 33)
 
 SHADOW_COLOR = (255, 255, 255, 30)
+STROKE_WIDTH = 2
 
 class PieceType(Enum):
     T_PIECE = 0
