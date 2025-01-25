@@ -8,27 +8,27 @@ class Block:
         self.rect = pygame.Rect(self.initial_pos[0], self.initial_pos[1], UNIT, UNIT)
         self.color = color
         self.stroke_color = (0, 0, 0)
-        self.stroke_width = 2
+        self.stroke_width = STROKE_WIDTH
         self.collides_with_block = False
 
     def draw(self):
         pygame.draw.rect(self.display_surface, self.color, self.rect)
         pygame.draw.rect(self.display_surface, self.stroke_color, self.rect, self.stroke_width)
         
-    def move_upward(self):
-        self.rect.y -= UNIT
+    def move_upward(self, steps = 1):
+        self.rect.y -= steps * UNIT
 
     def move_downward(self, steps = 1):
         self.rect.y += steps * UNIT
 
-    def move_left(self):
-        self.rect.x -= UNIT
+    def move_left(self, steps = 1):
+        self.rect.x -= steps * UNIT
 
-    def move_right(self):
-        self.rect.x += UNIT
+    def move_right(self, steps = 1):
+        self.rect.x += steps * UNIT
 
 class Piece:
-    def __init__(self, piece_type, initial_pos, game_board_rect, all_blocks) -> None:
+    def __init__(self, piece_type, initial_pos, game_board_rect, all_blocks, center=True) -> None:
         self.display_surface = pygame.display.get_surface()
         self.piece_type = piece_type
         self.initial_pos = initial_pos
@@ -41,12 +41,13 @@ class Piece:
         self.all_blocks = all_blocks
         self.rotate_position = 0
         self.color = PIECE_COLORS[self.piece_type]
+        self.center = center
         self.generate_piece()
 
     def generate_piece(self):
         blocks_inital_position = BLOCKS_INITAL_POSITION[self.piece_type]
         for pos in blocks_inital_position:
-            x = self.x + UNIT * pos[0] + PIECE_INITIAL_X_OFFSET[self.piece_type]
+            x = self.x + UNIT * pos[0] + (PIECE_INITIAL_X_OFFSET[self.piece_type] if self.center else 0)
             y = self.y + UNIT * pos[1]
             self.blocks.append(Block((x, y), self.color)) 
 
