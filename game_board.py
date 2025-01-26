@@ -28,7 +28,7 @@ class GameBoard:
         self.all_blocks = []
         new_game_board_rect = pygame.Rect(self.x, self.y - 3 * UNIT, self.width, self.height + 3 * UNIT)
         self.piece_list = [Piece(piece_type.value, (self.x, self.y - 3 * UNIT), new_game_board_rect, []) for piece_type in PieceType]
-        self.piece_queue = [self.copy_piece(random.choice(self.piece_list)) for _ in range(6)]
+        self.piece_queue = self.generate_piece_queue()
         self.current_piece = self.piece_queue.pop(0)
         self.shadow_piece = self.copy_piece(self.current_piece)
         self.update_shadow_piece()
@@ -57,7 +57,7 @@ class GameBoard:
             for block in self.current_piece.blocks:
                 self.all_blocks.append(block)
             self.current_piece = self.piece_queue.pop(0)
-            self.piece_queue.append(new_piece)
+            self.add_piece_queue()
             self.shadow_piece = self.copy_piece(self.current_piece)
             self.check_lines()
 
@@ -192,3 +192,18 @@ class GameBoard:
 
         if not key[pygame.K_DOWN]:
             self.tick_rate = 0.5
+
+    def generate_piece_queue(self):
+        piece_queue = []
+        while len(piece_queue) < 6:
+            new_piece = self.copy_piece(random.choice(self.piece_list))
+            if sum(1 for piece in piece_queue if piece.piece_type == new_piece.piece_type) < 2:
+                piece_queue.append(new_piece)
+        return piece_queue
+    
+    def add_piece_queue(self):
+        while True:
+            new_piece = self.copy_piece(random.choice(self.piece_list))
+            if sum(1 for piece in self.piece_queue if piece.piece_type == new_piece.piece_type) < 2:
+                self.piece_queue.append(new_piece)
+                break
