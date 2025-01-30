@@ -24,6 +24,7 @@ class GameBoard:
         self.u_d_accumulator = 0
         
         self.space_pressed = False
+        self.lshift_pressed = False
 
         self.all_blocks = []
         new_game_board_rect = pygame.Rect(self.x, self.y - 3 * UNIT, self.width, self.height + 3 * UNIT)
@@ -31,6 +32,8 @@ class GameBoard:
         self.piece_queue = self.generate_piece_queue()
         self.current_piece = self.piece_queue.pop(0)
         self.shadow_piece = self.copy_piece(self.current_piece)
+        self.held_piece = None
+
         self.update_shadow_piece()
         self.ui = UI(self.rect)
 
@@ -157,7 +160,6 @@ class GameBoard:
         # this is to prevent up key from being pressed when left or right key is held down
         if not self.u_d_pressed:
             if key[pygame.K_UP]:
-                print("up")
                 self.current_piece.rotate()
                 self.u_d_pressed = True
                 self.update_shadow_piece()
@@ -165,6 +167,7 @@ class GameBoard:
             if not key[pygame.K_UP]:
                 self.u_d_pressed = False
 
+        # when space is pressed
         if not self.space_pressed:
             if key[pygame.K_SPACE]:
                 self.drop_piece()
@@ -172,6 +175,15 @@ class GameBoard:
         else:
             if not key[pygame.K_SPACE]:
                 self.space_pressed = False
+
+        # when shift is pressed 
+        if not self.lshift_pressed:
+            if key[pygame.K_LSHIFT]:
+                self.hold_piece()
+                self.lshift_pressed = True
+        else:
+            if not key[pygame.K_LSHIFT]:
+                self.lshift_pressed = False
 
 
         # when left and right key is held down
@@ -207,3 +219,15 @@ class GameBoard:
             if sum(1 for piece in self.piece_queue if piece.piece_type == new_piece.piece_type) < 2:
                 self.piece_queue.append(new_piece)
                 break
+
+    def hold_piece(self):
+        if self.held_piece == None:
+            self.held_piece = self.copy_piece(self.current_piece)
+            self.current_piece = self.piece_queue.pop(0)
+            self.add_piece_queue()
+        else:
+            temp = self.copy_piece(self.current_piece)
+            self.current_piece = self.copy_piece(self.held_piece)
+            self.held_piece = temp
+            print(self.held_piece.piece_type)
+
