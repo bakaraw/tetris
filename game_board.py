@@ -32,7 +32,9 @@ class GameBoard:
         self.piece_queue = self.generate_piece_queue()
         self.current_piece = self.piece_queue.pop(0)
         self.shadow_piece = self.copy_piece(self.current_piece)
+
         self.held_piece = None
+        self.hold_toggle = True
 
         self.update_shadow_piece()
         self.ui = UI(self.rect)
@@ -63,6 +65,7 @@ class GameBoard:
             self.add_piece_queue()
             self.shadow_piece = self.copy_piece(self.current_piece)
             self.check_lines()
+            self.hold_toggle = True
 
         self.draw_grid()
         self.update_shadow_piece()
@@ -178,9 +181,10 @@ class GameBoard:
 
         # when shift is pressed 
         if not self.lshift_pressed:
-            if key[pygame.K_LSHIFT]:
+            if key[pygame.K_LSHIFT] and self.hold_toggle:
                 self.hold_piece()
                 self.lshift_pressed = True
+                self.hold_toggle = False
         else:
             if not key[pygame.K_LSHIFT]:
                 self.lshift_pressed = False
