@@ -67,7 +67,7 @@ class GameBoard:
         self.draw_grid()
         self.update_shadow_piece()
         self.draw_shadow_piece()
-        self.ui.draw([piece.piece_type for piece in self.piece_queue], None)
+        self.ui.draw([piece.piece_type for piece in self.piece_queue], self.held_piece.piece_type if self.held_piece else None)
         self.current_piece.draw()
 
         for block in self.all_blocks:
