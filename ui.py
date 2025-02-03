@@ -16,6 +16,13 @@ class UI:
         for piece in self.piece_queue:
             piece.draw()
 
+        if piece_held != None:
+            x_offset = 4
+            if piece_held == PieceType.I_PIECE.value:
+                x_offset = 5
+            self.piece_held = Piece(piece_held, (self.game_board_rect.x - x_offset*UNIT, self.game_board_rect.y), self.display_surface, [], center=False)
+            self.piece_held.draw()
+
         self.piece_queue.clear()
         
 
