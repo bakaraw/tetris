@@ -76,6 +76,7 @@ class GameBoard:
         for block in self.all_blocks:
             block.draw()
 
+
     def drop_piece(self):
         while not self.current_piece.reached_bottom:
             self.current_piece.update()
@@ -144,6 +145,15 @@ class GameBoard:
 
     def input(self):
         key = pygame.key.get_pressed()
+        # when space is pressed
+        if not self.space_pressed:
+            if key[pygame.K_SPACE]:
+                self.drop_piece()
+                self.space_pressed = True
+        else:
+            if not key[pygame.K_SPACE]:
+                self.space_pressed = False
+
         if not self.l_r_pressed:
            if key[pygame.K_RIGHT]:
                 self.current_piece.move_right()
@@ -169,15 +179,6 @@ class GameBoard:
         else:
             if not key[pygame.K_UP]:
                 self.u_d_pressed = False
-
-        # when space is pressed
-        if not self.space_pressed:
-            if key[pygame.K_SPACE]:
-                self.drop_piece()
-                self.space_pressed = True
-        else:
-            if not key[pygame.K_SPACE]:
-                self.space_pressed = False
 
         # when shift is pressed 
         if not self.lshift_pressed:
