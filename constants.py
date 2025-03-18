@@ -13,6 +13,7 @@ BG_COLOR = (33, 33, 33)
 SHADOW_COLOR = (255, 255, 255, 30)
 STROKE_WIDTH = 2
 
+
 class PieceType(Enum):
     T_PIECE = 0
     I_PIECE = 1
@@ -21,6 +22,7 @@ class PieceType(Enum):
     L_PIECE = 4
     J_PIECE = 5
     O_PIECE = 6
+
 
 PIECE_COLORS = {
     PieceType.T_PIECE.value: (233, 5, 233),
@@ -85,7 +87,7 @@ ROTATION_OFFSETS = {
     ],
     PieceType.Z_PIECE.value: [
         [(0, -2), (1, -1), (0, 0), (1, 1)],
-        [(2, 0), (1, 1), (0, 0), (-1 ,1)],
+        [(2, 0), (1, 1), (0, 0), (-1, 1)],
         [(0, 2), (-1, 1), (0, 0), (-1, -1)],
         [(-2, 0), (-1, -1), (0, 0), (1, -1)]
     ],

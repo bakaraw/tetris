@@ -1,8 +1,8 @@
 import pygame
-from constants import *
+from constants import SCREEN_WIDTH, SCREEN_HEIGHT, BG_COLOR, FPS
 from game_board import GameBoard
 
-# hello
+
 class Game:
     def __init__(self):
         pygame.init()
@@ -18,7 +18,8 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            self.delta_time = (pygame.time.get_ticks() - self.start_time) / 1000
+            self.delta_time = (pygame.time.get_ticks() -
+                               self.start_time) / 1000
             self.start_time = pygame.time.get_ticks()
 
             pygame.display.update()
@@ -26,8 +27,8 @@ class Game:
             self.game_board.update(self.delta_time)
             self.clock.tick(FPS)
 
-
         pygame.quit()
+
 
 if __name__ == "__main__":
     game = Game()
